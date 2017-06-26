@@ -22,10 +22,10 @@ class nodeMetadata:
         self.keyName = os.environ.get('KEY_NAME')
         self.nodeLabel = nodeLabel
         if nodeLabel == 'BUILD':
-            self.vmtype = 'centos'
+            self.vmType = 'centos'
             self.image = 'ami-f17f5e94'
         elif nodeLabel == 'DEPLOY':
-            self.vmtype = 'ubuntu'
+            self.vmType = 'ubuntu'
             self.image = 'ami-2dd5e03b'
 
     def setInstanceId(self, instanceId):
