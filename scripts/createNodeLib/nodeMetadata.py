@@ -42,8 +42,12 @@ class nodeMetadata:
 
     def setDeletedInstance(self, instanceId):
         '''set deleted instance.'''
-        if type(self.deletedNodeList) is list:
-            self.deletedNodeList.append(instanceId)
-        else:
+        try:
+            if type(self.deletedNodeList) is list:
+                self.deletedNodeList.append(instanceId)
+            else:
+                self.deletedNodeList = []
+                self.deletedNodeList.append(instanceId)
+        except:
             self.deletedNodeList = []
             self.deletedNodeList.append(instanceId)
