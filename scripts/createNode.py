@@ -67,7 +67,7 @@ def main():
         print "Error Node number not specified"
         usage()
         sys.exit(2)
-    elif number == None && operation == 'CREATE':
+    elif number == None and operation == 'CREATE':
         print "Error Node number not specified"
         usage()
         sys.exit(2)
