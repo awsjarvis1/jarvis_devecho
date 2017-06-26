@@ -48,7 +48,7 @@ class ec2Method:
         '''Starting the instance...'''
         # change instance ID appropriately
         try:
-             self.ec2.Instance(self.instanceid).start()
+             self.ec2.Instance(self.instanceId).start()
 
         except Exception, e2:
             error2 = "Error2: %s" % str(e2)
@@ -59,7 +59,7 @@ class ec2Method:
         '''Terminate the instance...'''
         # change instance ID appropriately
         try:
-             self.ec2.Instance(self.instanceid).terminate()
+             self.ec2.Instance(self.instanceId).terminate()
 
         except Exception, e2:
             error2 = "Error2: %s" % str(e2)
@@ -69,7 +69,7 @@ class ec2Method:
     def stopInstance(self):
         '''Stopping the instance...'''
         try:
-             self.ec2.Instance(self.instanceid).stop()
+             self.ec2.Instance(self.instanceId).stop()
 
         except Exception, e2:
             error2 = "Error2: %s" % str(e2)
