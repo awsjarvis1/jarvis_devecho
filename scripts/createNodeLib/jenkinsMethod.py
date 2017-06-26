@@ -2,6 +2,7 @@
 
 import jenkins
 import xml.etree.ElementTree as ET
+import sys
 
 class jenkinsMethod:
     '''Represents a jenkinsMethod.'''
