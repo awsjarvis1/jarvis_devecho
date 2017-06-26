@@ -37,8 +37,8 @@ class ec2Method:
             #wait for system come UP
             time.sleep(1)
         self.nodeData.setInstanceId(self.instanceid)
-        self.nodeData.setInstanceUrl(ec2.get_only_instances(self.instanceid)[0].public_dns_name)
-        self.nodeData.setInstanceIpaddress(ec2.get_only_instances(self.instanceid)[0].ip_address)
+        self.nodeData.setInstanceUrl(self.ec2.get_only_instances(self.instanceid)[0].public_dns_name)
+        self.nodeData.setInstanceIpaddress(self.ec2.get_only_instances(self.instanceid)[0].ip_address)
  
 
     def startInstance(self):
