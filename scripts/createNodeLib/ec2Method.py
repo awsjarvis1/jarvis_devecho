@@ -1,6 +1,7 @@
 # /usr/bin/python2.7
 
 import boto.ec2
+import time
 import sys
 
 
