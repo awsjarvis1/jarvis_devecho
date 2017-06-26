@@ -31,7 +31,7 @@ class ec2Method:
 
     def getInstanceData(self):
         '''Get Data from running instance'''
-        while "%s"%ec2.get_only_instances(self.instanceid)[0].ip_address == 'None' || ec2.get_only_instances(self.instanceid)[0].state_code != 16:
+        while "%s"%ec2.get_only_instances(self.instanceid)[0].ip_address == 'None' or ec2.get_only_instances(self.instanceid)[0].state_code != 16:
             #wait for system come UP
             time.sleep(1)
         self.nodeData.setInstanceId(self.instanceid)
