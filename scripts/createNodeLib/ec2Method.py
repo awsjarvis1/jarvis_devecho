@@ -9,14 +9,14 @@ class ec2Method:
 
     def __init__(self, nodeData):
         self.nodeData = nodeData
-        auth = {"aws_access_key_id": self.nodeData.awsAccessKeyId,
-            "aws_secret_access_key": self.nodeData.awsSecretAccessKey}
+        auth = {"aws_access_key_id": "%s"%self.nodeData.awsAccessKeyId,
+            "aws_secret_access_key": "%s"%self.nodeData.awsSecretAccessKey}
         try:
             self.ec2 = boto.ec2.connect_to_region(self.nodeData.region, **auth)
         except Exception, e1:
             error1 = "Error1: %s" % str(e1)
             print(error1)
-            sys.exit(0)
+            sys.exit(1)
 
     def runInstance(self):
         '''This method is to create ec2 instance'''
@@ -27,7 +27,7 @@ class ec2Method:
         except Exception, e2:
             error2 = "Error2: %s" % str(e2)
             print(error2)
-            sys.exit(0)
+            sys.exit(1)
         self.instanceid = ret.instances[0].id
 
     def getInstanceData(self):
@@ -49,7 +49,7 @@ class ec2Method:
         except Exception, e2:
             error2 = "Error2: %s" % str(e2)
             print(error2)
-            sys.exit(0)
+            sys.exit(1)
 
     def terminateInstance(self):
         '''Terminate the instance...'''
@@ -60,7 +60,7 @@ class ec2Method:
         except Exception, e2:
             error2 = "Error2: %s" % str(e2)
             print(error2)
-            sys.exit(0)
+            sys.exit(1)
 
     def stopInstance(self):
         '''Stopping the instance...'''
@@ -70,7 +70,7 @@ class ec2Method:
         except Exception, e2:
             error2 = "Error2: %s" % str(e2)
             print(error2)
-            sys.exit(0)
+            sys.exit(1)
 
     def createInstance(self):
         '''Get Data from running instance'''
