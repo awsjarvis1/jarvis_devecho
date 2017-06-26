@@ -12,7 +12,7 @@ class ec2Method:
         self.nodeData = nodeData
 
         try:
-            s = boto3.session.Session(profile_name=self.nodeData.region)
+            s = boto3.session.Session(region_name=self.nodeData.region)
             self.ec2 = s.resource('ec2')
         except Exception, e1:
             error1 = "Error1: %s" % str(e1)
