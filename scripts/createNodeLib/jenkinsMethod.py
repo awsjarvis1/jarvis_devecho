@@ -39,9 +39,9 @@ class jenkinsMethod:
         try:
             self.server.create_node(
                 self.nodeData.instanceId,
-                nodeDescription='RUN time generated AWS Node for ' + self.nodeData.operation,
+                nodeDescription='RUN time generated AWS Node for ' + self.nodeData.nodeLable,
                 remoteFS='/home/'+self.nodeData.vmType,
-                labels=self.nodeData.operation,
+                labels=self.nodeData.nodeLable,
                 exclusive=True,
                 launcher=jenkins.LAUNCHER_SSH,
                 launcher_params=params)

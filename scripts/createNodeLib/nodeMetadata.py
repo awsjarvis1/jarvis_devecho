@@ -8,8 +8,11 @@ import jenkins
 
 class NodeMetadata:
     '''Represents any Node Metadata or predefined data.'''
-    def __init__(self, vmtype, nodeLable):
-        self.region = os.environ.get('EC2REGION')
+    def __init__(self, nodeLable):
+        if os.environ.get('EC2REGION') == 'ohio':
+            self.region = 'us-east-2'
+        elif os.environ.get('EC2REGION') == 'mumbai':
+            self.region = 'ap-south-1'
         self.jenkinsUrl = os.environ.get('JENKINS_URL')
         self.jenkinsUsername = os.environ.get('USERNAME')
         self.jenkinsPassword = os.environ.get('PASSWORD')
@@ -19,8 +22,13 @@ class NodeMetadata:
         self.instanceType = os.environ.get('INSTANCE_TYPE')
         self.awsSecretAccessKey = os.environ.get('AWS_KEY')
         self.keyName = os.environ.get('KEY_NAME')
-        self.vmtype = vmtype
         self.nodeLable = nodeLable
+        if nodeLable == 'BUILD':
+            self.vmtype = 'centos'
+            self.image = 'ami-f17f5e94'
+        elif nodeLable == 'DEPLOY':
+            self.vmtype = 'ubuntu'
+            self.image = 'ami-2dd5e03b'
 
     def setInstanceId(self, instanceId):
         '''set instance Id.'''
