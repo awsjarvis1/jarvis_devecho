@@ -30,15 +30,15 @@ class nodeMetadata:
 
     def setInstanceId(self, instanceId):
         '''set instance Id.'''
-        self.instanceId = instanceid
+        self.instanceId = instanceId
 
-    def setInstanceUrl(self, instanceId):
+    def setInstanceUrl(self, instanceUrl):
         '''set instaance url.'''
-        self.instanceId = instanceid
+        self.instanceUrl = instanceUrl
 
-    def setInstanceIpaddress(self, instanceId):
+    def setInstanceIpaddress(self, DNSIp):
         '''set instance ipaddress.'''
-        self.instanceId = instanceid
+        self.DNSIp = DNSIp
 
     def setDeletedInstance(self, instanceId):
         '''set deleted instance.'''
