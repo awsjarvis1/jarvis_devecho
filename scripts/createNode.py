@@ -21,7 +21,7 @@ def createNode(nodeLabel, count):
     nodeMetadataObject = nodeMetadata(nodeLabel)
     ec2MethodObject = ec2Method(nodeMetadataObject)
     jenkinsMethodObject = jenkinsMethod(nodeMetadataObject)
-    for x in range(count):
+    for x in range(int(count)):
         ec2MethodObject.createInstance()
         jenkinsMethodObject.addNodeToJenkins()
 
