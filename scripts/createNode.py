@@ -34,7 +34,7 @@ def terminateNode(nodeLabel):
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hnco", ["help", "nodeLabel=", "number=", "operation="])
+        opts, args = getopt.getopt(sys.argv[1:], "hnco:v", ["help", "nodeLabel=", "number=", "operation="])
     except getopt.GetoptError as err:
         # print help information and exit:
         print str(err)  # will print something like "option -a not recognized"
