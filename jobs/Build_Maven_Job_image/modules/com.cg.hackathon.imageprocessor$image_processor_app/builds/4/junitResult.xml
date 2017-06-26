@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result plugin="junit@1.20">
+  <suites>
+    <suite>
+      <file>/home/centos/workspace/Build_Maven_Job_image/image_processing/image_processor_app/target/surefire-reports/TEST-com.cg.hackathon.imageprocessor.ImageProcessorControllerTest.xml</file>
+      <name>com.cg.hackathon.imageprocessor.ImageProcessorControllerTest</name>
+      <duration>0.487</duration>
+      <time>0.487</time>
+      <cases>
+        <case>
+          <duration>0.466</duration>
+          <className>com.cg.hackathon.imageprocessor.ImageProcessorControllerTest</className>
+          <testName>testValidGetImageProcessorResponse</testName>
+          <skipped>false</skipped>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>0.02</duration>
+          <className>com.cg.hackathon.imageprocessor.ImageProcessorControllerTest</className>
+          <testName>testNegativeScenario1GetImageProcessorResponse</testName>
+          <skipped>false</skipped>
+          <failedSince>0</failedSince>
+        </case>
+        <case>
+          <duration>0.001</duration>
+          <className>com.cg.hackathon.imageprocessor.ImageProcessorControllerTest</className>
+          <testName>testNegativeScenario2GetImageProcessorResponse</testName>
+          <skipped>false</skipped>
+          <failedSince>0</failedSince>
+        </case>
+      </cases>
+    </suite>
+  </suites>
+  <duration>0.487</duration>
+  <keepLongStdio>false</keepLongStdio>
+</result>
