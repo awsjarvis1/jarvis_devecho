@@ -8,7 +8,7 @@ import jenkins
 
 class NodeMetadata:
     '''Represents any Node Metadata or predefined data.'''
-    def __init__(self, nodeLable):
+    def __init__(self, nodeLabel):
         if os.environ.get('EC2REGION') == 'ohio':
             self.region = 'us-east-2'
         elif os.environ.get('EC2REGION') == 'mumbai':
@@ -22,11 +22,11 @@ class NodeMetadata:
         self.instanceType = os.environ.get('INSTANCE_TYPE')
         self.awsSecretAccessKey = os.environ.get('AWS_KEY')
         self.keyName = os.environ.get('KEY_NAME')
-        self.nodeLable = nodeLable
-        if nodeLable == 'BUILD':
+        self.nodeLabel = nodeLabel
+        if nodeLabel == 'BUILD':
             self.vmtype = 'centos'
             self.image = 'ami-f17f5e94'
-        elif nodeLable == 'DEPLOY':
+        elif nodeLabel == 'DEPLOY':
             self.vmtype = 'ubuntu'
             self.image = 'ami-2dd5e03b'
 

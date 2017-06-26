@@ -39,9 +39,9 @@ class jenkinsMethod:
         try:
             self.server.create_node(
                 self.nodeData.instanceId,
-                nodeDescription='RUN time generated AWS Node for ' + self.nodeData.nodeLable,
+                nodeDescription='RUN time generated AWS Node for ' + self.nodeData.nodeLabel,
                 remoteFS='/home/'+self.nodeData.vmType,
-                labels=self.nodeData.nodeLable,
+                labels=self.nodeData.nodeLabel,
                 exclusive=True,
                 launcher=jenkins.LAUNCHER_SSH,
                 launcher_params=params)
@@ -60,7 +60,7 @@ class jenkinsMethod:
             sys.exit(0)
 
     def deleteNodeByLabel(self, nodeLabel):
-        '''delete node by lablel name'''
+        '''delete node by Labell name'''
         for r in self.server.get_nodes():
             if r['name'] == 'master':
                 continue
