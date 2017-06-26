@@ -18,17 +18,17 @@ def usage():
     print "    --operation/-o    ->    Operation that need to perform (CREATE|TERMINATE)\n"
 
 def createNode(nodeLabel, count):
-    nodeMetadataObject = new nodeMetadata(nodeLabel)
-    ec2MethodObject = new ec2Method(nodeMetadataObject)
-    jenkinsMethodObject = new jenkinsMethod(nodeMetadataObject)
+    nodeMetadataObject = nodeMetadata(nodeLabel)
+    ec2MethodObject = ec2Method(nodeMetadataObject)
+    jenkinsMethodObject = jenkinsMethod(nodeMetadataObject)
     for x in range(count):
         ec2MethodObject.createInstance()
         jenkinsMethodObject.addNodeToJenkins()
 
 def terminateNode(nodeLabel):
-    nodeMetadataObject = new nodeMetadata(nodeLabel)
-    ec2MethodObject = new ec2Method(nodeMetadataObject)
-    jenkinsMethodObject = new jenkinsMethod(nodeMetadataObject)
+    nodeMetadataObject = nodeMetadata(nodeLabel)
+    ec2MethodObject = ec2Method(nodeMetadataObject)
+    jenkinsMethodObject = jenkinsMethod(nodeMetadataObject)
     jenkinsMethodObject.deleteNodeByLabel(nodeLabel)
     ec2MethodObject.terminateDeletedInstance()
 
