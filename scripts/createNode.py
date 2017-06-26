@@ -34,7 +34,7 @@ def terminateNode(nodeLabel):
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hnco", ["help", "nodeLabel=", "number=", ""])
+        opts, args = getopt.getopt(sys.argv[1:], "hnco", ["help", "nodeLabel=", "number=", "operation="])
     except getopt.GetoptError as err:
         # print help information and exit:
         print str(err)  # will print something like "option -a not recognized"
@@ -55,7 +55,7 @@ def main():
         elif o in ("-c", "--number"):
             number = a
         elif o in ("-o", "--operation"):
-            number = a
+            operation = a
         else:
             assert False, "unhandled option"
     #print Help option not specifiled 
