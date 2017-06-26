@@ -3,7 +3,7 @@
 import os
 import sys
 
-class NodeMetadata:
+class nodeMetadata:
     '''Represents any Node Metadata or predefined data.'''
 
     def __init__(self, nodeLabel):
