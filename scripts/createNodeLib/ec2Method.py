@@ -10,8 +10,8 @@ class ec2Method:
 
     def __init__(self, nodeData):
         self.nodeData = nodeData
-        auth = {"aws_access_key_id": "AKIAJX4U4BQPNFJR3HPQ",
-            "aws_secret_access_key": "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"}
+        auth = {"aws_access_key_id": "AKIAJCUUH2YU7UCXD44Q",
+            "aws_secret_access_key": "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"}
         try:
             self.ec2 = boto.ec2.connect_to_region(self.nodeData.region, **auth)
         except Exception, e1:
