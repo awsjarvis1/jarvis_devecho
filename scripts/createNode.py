@@ -10,12 +10,12 @@ import jenkins
 from createNodeLib import jenkinsMethod, ec2Method, nodeMetadata
 
 def usage():
-    output = "createNode.py:\n    This script is for creation of ec2 instance and add it to jenkins"+
-        "(this script is specialy designed to jenkins use)\n"+
-        "usage:\n    --help/-h    ->    Display help\n"+
-        "    --nodeLabel/-n    ->    Under which Label to want to add node\n"+
-        "    --numbere/-c    ->    Number of node that need to be added\n"+
-        "    --operation/-o    ->    Operation that need to perform (CREATE|TERMINATE)\n"+
+    print "createNode.py:\n    This script is for creation of ec2 instance and add it to jenkins"
+    print "(this script is specialy designed to jenkins use)\n"
+    print "usage:\n    --help/-h    ->    Display help\n"
+    print "    --nodeLabel/-n    ->    Under which Label to want to add node\n"
+    print "    --numbere/-c    ->    Number of node that need to be added\n"
+    print "    --operation/-o    ->    Operation that need to perform (CREATE|TERMINATE)\n"
 
 def createNode(nodeLabel, count):
     nodeMetadataObject = new nodeMetadata(nodeLabel)
@@ -34,13 +34,13 @@ def terminateNode(nodeLabel):
 
 def main():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hnco", ["help", "nodeLable=", "number=", ""])
+        opts, args = getopt.getopt(sys.argv[1:], "hnco", ["help", "nodeLabel=", "number=", ""])
     except getopt.GetoptError as err:
         # print help information and exit:
         print str(err)  # will print something like "option -a not recognized"
         usage()
         sys.exit(2)
-    nodeLable = None
+    nodeLabel = None
     number = None
     operation = None
     verbose = False
@@ -50,8 +50,8 @@ def main():
         elif o in ("-h", "--help"):
             usage()
             sys.exit()
-        elif o in ("-n", "--nodeLable"):
-            nodeLable = a
+        elif o in ("-n", "--nodeLabel"):
+            nodeLabel = a
         elif o in ("-c", "--number"):
             number = a
         elif o in ("-o", "--operation"):
@@ -59,8 +59,8 @@ def main():
         else:
             assert False, "unhandled option"
     #print Help option not specifiled 
-    if nodeLable == None:
-        print "Error Node Lable not specified"
+    if nodeLabel == None:
+        print "Error Node Label not specified"
         usage()
         sys.exit(2)
     elif operation == None:
