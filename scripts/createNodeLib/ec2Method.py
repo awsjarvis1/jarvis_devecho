@@ -6,6 +6,7 @@ import sys
 
 class ec2Method:
     '''Represents a ec2 methods'''
+
     def __init__(self, nodeData):
         self.nodeData = nodeData
         auth = {"aws_access_key_id": self.nodeData.awsAccessKeyId,

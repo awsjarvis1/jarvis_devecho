@@ -1,13 +1,11 @@
-import boto3
+#!/usr/bin/env python
+
 import os
 import sys
-import yaml
-import time
-import getopt, sys
-import jenkins
 
 class NodeMetadata:
     '''Represents any Node Metadata or predefined data.'''
+
     def __init__(self, nodeLabel):
         if os.environ.get('EC2REGION') == 'ohio':
             self.region = 'us-east-2'
