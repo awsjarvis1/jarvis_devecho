@@ -21,12 +21,11 @@ class nodeMetadata:
         self.awsSecretAccessKey = os.environ.get('AWS_KEY')
         self.keyName = os.environ.get('KEY_NAME')
         self.nodeLabel = nodeLabel
+        self.image = os.environ.get(nodeLabel+'_'+os.environ.get('EC2REGION').upper())
         if nodeLabel == 'BUILD':
             self.vmType = 'centos'
-            self.image = 'ami-f17f5e94'
         elif nodeLabel == 'DEPLOY':
             self.vmType = 'ubuntu'
-            self.image = 'ami-2dd5e03b'
 
     def setInstanceId(self, instanceId):
         '''set instance Id.'''
