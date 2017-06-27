@@ -23,7 +23,7 @@ class jenkinsMethod:
             config = config.replace(oldpattern, newpattern)
             self.server.reconfig_node('node1', config)
         except Exception, e1:
-            error1 = "Error1: %s" % str(e1)
+            error1 = "overWriteNode Error1: %s" % str(e1)
             print(error1)
             sys.exit(2)
 
@@ -48,7 +48,7 @@ class jenkinsMethod:
                 launcher=jenkins.LAUNCHER_SSH,
                 launcher_params=params)
         except Exception, e1:
-            error1 = "Error1: %s" % str(e1)
+            error1 = "createNode Error1: %s" % str(e1)
             print(error1)
             sys.exit(2)
 
@@ -57,7 +57,7 @@ class jenkinsMethod:
         try:
             self.server.delete_node(self.instanceId)
         except Exception, e1:
-            error1 = "Error1: %s" % str(e1)
+            error1 = "deleteNode Error1: %s" % str(e1)
             print(error1)
             sys.exit(2)
 
