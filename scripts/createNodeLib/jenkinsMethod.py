@@ -19,9 +19,9 @@ class jenkinsMethod:
         newpattern = '<retryWaitTime>0</retryWaitTime>'+"\n"+'    <sshHostKeyVerificationStrategy class="hudson.plugins.sshslaves.verifiers.NonVerifyingKeyVerificationStrategy"/>'
         oldpattern = '<retryWaitTime>0</retryWaitTime>'
         try:
-            config = self.server.get_node_config('node1')
+            config = self.server.get_node_config(self.nodeData.instanceId)
             config = config.replace(oldpattern, newpattern)
-            self.server.reconfig_node('node1', config)
+            self.server.reconfig_node(self.nodeData.instanceId, config)
         except Exception, e1:
             error1 = "overWriteNode Error1: %s" % str(e1)
             print(error1)
