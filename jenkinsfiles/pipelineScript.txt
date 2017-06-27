@@ -1,0 +1,47 @@
+gitBranch = params["GIT_BRANCH"]
+
+runBuild()
+ 
+def runBuild() {
+    println "===== In runBuild method ===="
+    parallelBuilds()
+}
+
+def parallelBuilds() {
+    //construct parallel jobs list
+ 
+    //build Image
+    println "";
+    // timestamp
+    print new Date();
+    println "  Starting Preparation of build Nodes..."
+    count = '0';
+    stage('Stage 1: Node Prepare for Build') {
+        if (gitBranch != 'integration'){
+            println "  Starting single node preparaton for building "+gitBranch
+            count = '1';
+        } else {
+            println "  Starting 3 node preparaton for building "+gitBranch
+            count = '3';
+        }
+        build job: 'EC2_instance_n_node_creater',
+            parameters: [string(name: 'EC2REGION', value: 'ohio'),
+                string(name: 'COUNT', value: '1'),
+                [$class: 'GeneratorKeyValueParameterValue', name: 'NODELABEL', value: 'BUILD']]
+    }
+    build_job = ''
+    branchName = gitBranch.split('/')[1]
+    if(branchName == 'chatui'){
+        build_job = 'Build_Maven_Job_chatui'
+    } else if(branchName == 'image_processing') {
+        build_job = 'Build_Maven_Job_image'
+    } else if(branchName == 'loganalytics') {
+        build_job = 'Build_Maven_Job_log'
+    }
+    stage('Stage2: Build code changes') {
+        build job: build_job, parameters: [string(name: 'GIT_BRANCH', value: gitBranch)]
+    }
+    stage('Stage3: destroy generated node') {
+        build job: 'EC2_instance_n_node_terminator', parameters: [string(name: 'EC2REGION', value: 'ohio'), [$class: 'GeneratorKeyValueParameterValue', name: 'NODELABEL', value: 'BUILD']]
+    }
+}
