@@ -1,0 +1,335 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.13">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.27.0">
+      <projectUrl>https://github.com/awsjarvis1/jarvis/</projectUrl>
+      <displayName></displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.4.5">
+      <gitLabConnection></gitLabConnection>
+    </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
+    <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      <triggers/>
+    </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36">
+    <script>import hudson.model.*
+import java.util.Date
+import hudson.Util
+import groovy.json.JsonSlurper
+import groovy.json.JsonBuilder
+import hudson.model.Cause
+import hudson.model.Result
+import hudson.model.ParametersAction
+import hudson.model.StringParameterValue
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import groovy.io.FileType
+import java.nio.file.attribute.BasicFileAttributes
+import groovy.xml.MarkupBuilder
+ 
+ 
+accurevStream  = params[&quot;ACCUREV_STREAM&quot;]
+ccache_config  = params[&quot;CCACHE_CONFIG&quot;]
+transaction_id = params[&quot;TRANSACTION_ID&quot;]
+build_flavor   = params[&quot;BUILD_FLAVOR&quot;]
+workspace_dir  = params[&quot;WORKSPACE_DIR&quot;]
+build_flavor   = params[&quot;BUILD_FLAVOR&quot;]
+select_node    = params[&quot;SELECT_NODE&quot;]
+plot_graph     = params[&quot;PLOT_GRAPH&quot;]
+ 
+// environment
+build_current   = build.id
+private_storage = build.environment.get(&apos;PRIVATE_STORAGE&apos;)
+rooturl         = build.environment.get(&apos;JENKINS_URL&apos;)
+build_stage     = [:]
+project_name    = build.project.name
+//path where all file stored for this job
+csv_share_path = private_storage+&quot;performance_csvdata/&quot;
+build_result   = &quot;SUCCESS&quot;
+ 
+println build.workspace
+new File(&quot;${build.workspace}&quot;).mkdir()
+ 
+ccache_string = &quot;without ccache&quot;
+if( ccache_config == &quot;true&quot; )
+{
+  ccache_string = &quot;with ccache&quot;
+}
+ 
+build.setDisplayName(&quot;#&quot;+build.id+&quot;: &quot;+accurevStream+&quot; &quot;+ccache_string)
+ 
+ 
+if ( transaction_id == &quot;&quot; ) {
+    transaction_id = [&quot;sh&quot;, &quot;-c&quot;, &quot;accurev hist -fx -t highest -s ${accurevStream} | xml sel -t -m &apos;//transaction[@id]&apos; -v &apos;@id&apos;&quot;].execute().text
+    println &quot;Transaction ID = &quot; +transaction_id
+}
+ 
+compare_with = &quot;&quot;
+csv_share_path = csv_share_path + build.id
+ 
+println &quot;path= &quot; + private_storage+&quot;performance_csvdata/&quot;+build_current
+println &quot;build_current = &quot; + build_current
+println build.timestampString
+ 
+runBuild()
+copyAllData()
+report()
+ 
+def runBuild() {
+    println &quot;===== In runBuild method ====&quot;
+    parallelBuilds()
+}
+ 
+def report() {
+    def htmlFile = new File(&quot;${build.workspace}/results.html&quot;)
+    def result_img
+    def built_on
+    if (build_result == &quot;SUCCESS&quot;) {
+      result_img = &quot;static/4737b143/images/32x32/blue.png&quot;
+    } else if  (build_result == &quot;FAILURE&quot;){
+      result_img = &quot;static/4737b143/images/32x32/red.png&quot;
+    } else {
+      result_img = &quot;static/4737b143/images/32x32/yellow.png&quot;
+    }
+ 
+    if (build.builtOnStr == &apos;&apos;) {
+        built_on = &apos;master&apos;
+    } else {
+        built_on = build.builtOnStr
+    }
+    //Log children jobs information into a file, email template will use the file to generate the report
+    StringWriter writer = new StringWriter()
+    def build_html = new MarkupBuilder(writer)
+    build_html.html{
+        title(project_name)
+        h3(&quot;BUILD SUMMARY&quot;)
+        body{
+            div(&apos;class&apos;:&apos;header&apos;){
+                table(&apos;border&apos;:1){
+                    tr(&apos;class&apos;:&apos;gray&apos;){
+                        td(&apos;align&apos;:&apos;right&apos;){
+                            img(&apos;src&apos;:rooturl+result_img)
+                        }
+                        td(&apos;valign&apos;:&apos;center&apos;){
+                            b(&apos;style&apos;:&apos;font-size: 200%;&apos;,&quot;BUILD &quot;+build_result)
+                        }
+                    }
+                    tr{
+                        td(&apos;Build URL&apos;)
+                        td{
+                            a(&apos;href&apos;:&quot;${rooturl}${build.url}&quot;,&quot;${rooturl}${build.url}&quot;)
+                        }
+                    }
+                    tr{
+                        td(&apos;Build Graph URL&apos;)
+                        td{
+                            a(&apos;href&apos;:&quot;${rooturl}${build.url}BuildGraph&quot;,&quot;${rooturl}${build.url}BuildGraph&quot;)
+                        }
+                    }
+                    tr{
+                        td(&apos;Build Output&apos;)
+                        td{
+                            a(&apos;href&apos;:&quot;${rooturl}${build.url}console&quot;,&quot;${rooturl}${build.url}console&quot;)
+                        }
+                    }
+                    tr{
+                        td(&apos;Project:&apos;)
+                        td(project_name)
+                    }
+                    tr{
+                        td(&apos;Date of build:&apos;)
+                        td(build.timestampString)
+                    }
+                    tr{
+                        td(&apos;Build duration:&apos;)
+                        td(build.durationString)
+                    }
+                    tr{
+                        td(&apos;Build cause:&apos;)
+                      for (hudson.model.Cause cause in build.causes) {
+                        td(cause.shortDescription)
+                      }
+                    }
+                  if (build.description != null) {
+                    tr{
+                        td(&apos;Build description:&apos;)
+                        td(build.description)
+                    }
+                  }
+                    tr{
+                        td(&apos;Built on:&apos;)
+                       td(built_on)
+                    }
+                                        tr{
+                        td(&apos;class&apos;:&apos;bigPaddingAndGreen&apos;, &quot;Workflow:&quot;)
+                        td{
+                          for ( item in build_stage ) {
+                            div{
+                                em{
+                                    b(item.key+&quot;:&quot;)
+                                }
+                                table{
+                                  for ( stage_info in item.value ) {
+                                    tr{
+                                        td(&apos;valign&apos;:&apos;center&apos;){
+                                          if (stage_info.result == Result.SUCCESS) {
+                                            img(&apos;src&apos;:rooturl+&quot;static/4737b143/images/16x16/blue.png&quot;)
+                                          } else if (stage_info.result == Result.FAILURE){
+                                            img(&apos;src&apos;:rooturl+&quot;static/4737b143/images/16x16/red.png&quot;)
+                                          } else{
+                                            img(&apos;src&apos;:rooturl+&quot;static/4737b143/images/16x16/yellow.png&quot;)
+                                          }
+                                        }
+                                        td(&apos;align&apos;:&apos;right&apos;){
+                                            a(href:&quot;${rooturl}${stage_info.url}&quot;, stage_info.project.fullName+&quot; \&quot;&quot;+stage_info.environment.get(&quot;BUILD_DISPLAY_NAME&quot;)+&quot;\&quot; &quot;+&quot; (&quot;+stage_info.result.toString()+&quot;)&quot;)
+                                        }
+                                    }
+                                  }
+                                }
+                            }
+                          }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    htmlFile.write(writer.toString())
+}
+ 
+def parallelBuilds() {
+    //construct parallel jobs list
+ 
+    //build Image
+    println &quot;&quot;
+    // timestamp
+    print new Date()
+    println &quot;  Starting Parallel Jobs...&quot;
+    println &quot; Build for Transaction ID = &quot; + transaction_id
+ 
+    def list = select_node.split(&apos;,&apos;)
+    def flavors = []
+    build_flavor1 = &quot;DEBUG&quot;
+    build_flavor2 = &quot;RETAIL&quot;
+    builds = []
+    if( build_flavor == build_flavor1 || build_flavor == &quot;BOTH&quot; )
+    {
+        flavors.push(build_flavor1)
+    }
+    if( build_flavor == build_flavor2 || build_flavor == &quot;BOTH&quot; )
+    {
+        flavors.push(build_flavor2)
+    }
+ 
+    parallelJobs = []
+    def build_string = [:]
+    build_stage[&apos;Stage 1&apos;] = []
+    build_stage[&apos;Stage 2&apos;] = []
+    build_stage[&apos;Stage 3&apos;] = []
+    for (flavor in flavors) {
+        for (item in list) {
+            def params = [ACCUREV_STREAM: accurevStream,
+                                          CCACHE_CONFIG: ccache_config,
+                                          TRANSACTION_ID: transaction_id,
+                                          BUILD_FLAVOR: flavor,
+                                          SLAVE_LABEL: item,
+                                          WORKSPACE_DIR: workspace_dir]
+            def build_Object = {
+                                def build_id
+                                build_id = build( params, &quot;Performance_test_jobs/perftest_Build&quot;)
+                                builds.push(build_id)
+                               }
+            parallelJobs.push(build_Object)
+        }
+        build_string[flavor] = &quot;&quot;
+    }
+ 
+    try {
+        parallel( parallelJobs )
+ 
+        for (item in builds) {
+            if ( item != null ) {
+                runUpdateBuildMetrics( private_storage+item.project.fullName+&quot;/&quot;+item.number )
+                def flavor = item.environment.get( &quot;BUILD_FLAVOR&quot; )
+                def slave_lable = item.environment.get( &quot;SLAVE_LABEL&quot; )
+                build_string[flavor] = build_string[flavor] + item.project.fullName+&quot;/&quot;+item.number+&apos;:&apos;+slave_lable+&apos;:&apos;+slave_lable+&apos;,&apos;
+                build_stage[&apos;Stage 1&apos;].push(item)
+            }
+        }
+        if( plot_graph == &quot;true&quot; )
+        {
+            for ( item in build_string ) {
+                if ( item != null ) {
+                    def temp_build = build(&quot;Performance_test_jobs/Collect_csv_data_and_generate_graph&quot;,
+                      CSV_PATH: csv_share_path,
+                      BUILD_STRING: item.value,
+                      BUILD_FLAVOR: item.key,
+                      BUILDTYPE: &apos;all&apos;,
+                      COMPARE_BUILD: compare_with
+                    )
+                    build_stage[&apos;Stage 3&apos;].push(temp_build)
+                }
+            }
+        }
+ 
+    } catch (all) {
+        if( build_stage[&apos;Stage 1&apos;].size() == 0) {
+          for (item in builds) {
+            if ( item != null ) {
+                build_stage[&apos;Stage 1&apos;].push(item)
+            }
+          }
+        }
+        build_result = &quot;FAILURE&quot;
+        report()
+        assert true
+        assert all in MalformedURLException
+    }
+}
+ 
+def runUpdateBuildMetrics( path ){
+    def temp_build = build(&quot;update BuildMetrics&quot;,
+          buildmetaFile: path + &apos;/buildmetadata.csv&apos;,
+          componentFile: path + &apos;/RawComponent.csv&apos;,
+          cpuFile: path + &apos;/RawCpu.csv&apos;,
+          diskFile: path + &apos;/RawDisk.csv&apos;,
+          eventFile: path + &apos;/RawEvent.csv&apos;,
+          memoryFile: path + &apos;/RawMemory.csv&apos;,
+          warningsFile: path + &apos;/warnings.csv&apos;
+    )
+    build_stage[&apos;Stage 2&apos;].push(temp_build)
+}
+ 
+def executeCommand( dest, target, pattern ){
+    def exitValue = [&quot;sh&quot;, &quot;-c&quot;, &quot;find ${dest} -name ${pattern} -type f | xargs -I {} cp {} ${target}&quot;].execute().text
+                println exitValue
+}
+ 
+def copyAllData(){
+    println &quot;========= copying all csv files ======&quot;
+    println private_storage+&quot;performance_csvdata/&quot;+build_current
+ 
+    def workspaceLocation = build.workspace
+    def dest              = &quot;${private_storage}performance_csvdata/${build_current}&quot;
+    def file_type         = [&apos;html&apos;, &apos;csv&apos;, &apos;gif&apos;]
+ 
+    for ( item in file_type ) {
+        def target  = &quot;${workspaceLocation}/${item}&quot;
+        def pattern = &quot;*.${item}&quot;
+        &quot;mkdir -p ${workspaceLocation}/${item}&quot;.execute()
+        println target
+        println pattern
+        executeCommand( dest, target, pattern )
+    }
+    println &quot;=== done copy===&quot;
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
