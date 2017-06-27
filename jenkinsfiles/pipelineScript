@@ -30,12 +30,12 @@ def parallelBuilds() {
                 [$class: 'GeneratorKeyValueParameterValue', name: 'NODELABEL', value: 'BUILD']]
     }
     build_job = ''
-    def(branchtype, branchname) = gitBranch.split('/')
-    if(branchname == 'chatui'){
+    branchName = gitBranch.split('/')[1]
+    if(branchName == 'chatui'){
         build_job = 'Build_Maven_Job_chatui'
-    } else if(branchname == 'image_processing') {
+    } else if(branchName == 'image_processing') {
         build_job = 'Build_Maven_Job_image'
-    } else if(branchname == 'loganalytics') {
+    } else if(branchName == 'loganalytics') {
         build_job = 'Build_Maven_Job_log'
     }
     stage('Stage2: Build code changes') {
