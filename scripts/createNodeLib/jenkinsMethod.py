@@ -25,7 +25,7 @@ class jenkinsMethod:
         except Exception, e1:
             error1 = "Error1: %s" % str(e1)
             print(error1)
-            sys.exit(0)
+            sys.exit(2)
 
     def createNode(self):
         '''create node with input parameter'''
@@ -40,6 +40,7 @@ class jenkinsMethod:
         try:
             self.server.create_node(
                 self.nodeData.instanceId,
+                numExecutors=1,
                 nodeDescription='RUN time generated AWS Node for ' + self.nodeData.nodeLabel,
                 remoteFS='/home/'+self.nodeData.vmType,
                 labels=self.nodeData.nodeLabel,
@@ -49,7 +50,7 @@ class jenkinsMethod:
         except Exception, e1:
             error1 = "Error1: %s" % str(e1)
             print(error1)
-            sys.exit(0)
+            sys.exit(2)
 
     def deleteNode(self):
         '''delete node'''
@@ -58,7 +59,7 @@ class jenkinsMethod:
         except Exception, e1:
             error1 = "Error1: %s" % str(e1)
             print(error1)
-            sys.exit(0)
+            sys.exit(2)
 
     def deleteNodeByLabel(self, nodeLabel):
         '''delete node by Labell name'''
