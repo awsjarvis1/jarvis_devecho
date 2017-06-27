@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.4.5">
+      <gitLabConnection></gitLabConnection>
+    </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
+    <com.synopsys.arc.jenkins.plugins.ownership.jobs.JobOwnerJobProperty plugin="ownership@0.10.0"/>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>EC2REGION</name>
+          <description></description>
+          <defaultValue>ohio</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>COUNT</name>
+          <description></description>
+          <defaultValue>1</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <org.jenkinsci.plugins.jobgenerator.parameters.GeneratorChoiceParameterDefinition plugin="jobgenerator@1.22">
+          <name>NODELABEL</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>BUILD</string>
+              <string>DEPLOY</string>
+            </a>
+          </choices>
+        </org.jenkinsci.plugins.jobgenerator.parameters.GeneratorChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.3.1">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/awsjarvis1/jarvis_devecho.git</url>
+        <credentialsId>98c378ea-adc4-4d9d-bfec-f138146004e4</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/dev/wanjah/devechochnages</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>python scripts/createNode.py --operation CREATE --nodeLabel ${NODELABEL} --number ${COUNT}</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.33">
+      <deleteDirs>false</deleteDirs>
+      <cleanupParameter></cleanupParameter>
+      <externalDelete></externalDelete>
+    </hudson.plugins.ws__cleanup.PreBuildCleanup>
+    <EnvInjectBuildWrapper plugin="envinject@2.1.1">
+      <info>
+        <propertiesContent>INSTANCE_TYPE=t2.micro</propertiesContent>
+        <secureGroovyScript plugin="script-security@1.29">
+          <script></script>
+          <sandbox>false</sandbox>
+        </secureGroovyScript>
+        <loadFilesFromMaster>false</loadFilesFromMaster>
+      </info>
+    </EnvInjectBuildWrapper>
+    <EnvInjectPasswordWrapper plugin="envinject@2.1.1">
+      <injectGlobalPasswords>true</injectGlobalPasswords>
+      <maskPasswordParameters>true</maskPasswordParameters>
+      <passwordEntries>
+        <EnvInjectPasswordEntry>
+          <name>USERNAME</name>
+          <value>{AQAAABAAAAAQPiITBPdE1DDj4/OczaXUMGpd/do6aUOkz0L/CsCdkc4=}</value>
+        </EnvInjectPasswordEntry>
+        <EnvInjectPasswordEntry>
+          <name>PASSWORD</name>
+          <value>{AQAAABAAAAAQw1W2ZKmrnHseRD1rad4vAVy9eSnIYeuKP5Ct7giI4wQ=}</value>
+        </EnvInjectPasswordEntry>
+        <EnvInjectPasswordEntry>
+          <name>KEY_NAME</name>
+          <value>{AQAAABAAAAAQvxaJdz2ysZaD+m/ZGpZO8/Rm1rpK2A2dWQcDlgdWykI=}</value>
+        </EnvInjectPasswordEntry>
+      </passwordEntries>
+    </EnvInjectPasswordWrapper>
+  </buildWrappers>
+</project>
