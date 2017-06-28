@@ -18,9 +18,12 @@ def parallelBuilds() {
     count = '0';
     stage('Stage 1: Node Prepare for Build') {
         if (gitBranch != 'integration'){
-            println "  Starting single node preparaton for building "+gitBranch
+            println "  Starting single node preparation for building "+gitBranch
             count = '1';
-        } else {
+        } else if(  gitBranch.split('/')[1] == 'chatui') {
+            count = '2';
+        }
+        else {
             println "  Starting 3 node preparaton for building "+gitBranch
             count = '3';
         }
@@ -32,7 +35,7 @@ def parallelBuilds() {
     build_job = ''
     branchName = gitBranch.split('/')[1]
     if(branchName == 'chatui'){
-        build_job = 'Build_Maven_Job_chatui'
+        build_job = 'Build_Maven_Job_webapi'
     } else if(branchName == 'image_processing') {
         build_job = 'Build_Maven_Job_image'
     } else if(branchName == 'loganalytics') {
@@ -40,6 +43,9 @@ def parallelBuilds() {
     }
     stage('Stage2: Build code changes') {
         build job: build_job, parameters: [string(name: 'GIT_BRANCH', value: gitBranch)]
+        if(branchName == 'chatui'){
+            build job: build_job, parameters: [string(name: 'GIT_BRANCH', value: 'Build_Maven_Job_webapp')]
+        }
     }
     stage('Stage3: destroy generated node') {
         build job: 'EC2_instance_n_node_terminator', parameters: [string(name: 'EC2REGION', value: 'ohio'), [$class: 'GeneratorKeyValueParameterValue', name: 'NODELABEL', value: 'BUILD']]

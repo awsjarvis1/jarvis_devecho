@@ -2,6 +2,7 @@
 
 import os
 import sys
+import configparser
 
 class nodeMetadata:
     '''Represents any Node Metadata or predefined data.'''
@@ -50,3 +51,12 @@ class nodeMetadata:
         except:
             self.deletedNodeList = []
             self.deletedNodeList.append(instanceId)
+
+    def saveData(self):
+        ''' This function will save data to config file'''
+        config = configparser.ConfigParser()
+        config[self.instanceId] = {}
+        config[self.instanceId]['instanceUrl'] = self.instanceUrl
+        config[self.instanceId]['DNSIp'] = self.DNSIp
+        with open(self.instanceId+'.ini', 'w') as configfile:
+            config.write(configfile)
