@@ -58,7 +58,7 @@ class nodeMetadata:
         ''' This function will save data to config file'''
 
         config = configparser.ConfigParser()
-        if os.path.isfile(fname):
+        if os.path.isfile('deploy_vm.ini'):
             config.read('deploy_vm.ini')
         else:
             config[self.deploy[self.index]] = {}
