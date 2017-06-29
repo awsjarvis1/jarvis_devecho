@@ -3,7 +3,6 @@
 import boto3
 import os
 import sys
-import yaml
 import time
 import getopt, sys
 import jenkins
