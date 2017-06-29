@@ -21,6 +21,8 @@ class nodeMetadata:
         self.instanceType = os.environ.get('INSTANCE_TYPE')
         self.awsSecretAccessKey = os.environ.get('AWS_KEY')
         self.keyName = os.environ.get('KEY_NAME')
+        self.deploy = ['chatui', 'image', 'log']
+        self.index = 0
         self.nodeLabel = nodeLabel
         self.image = os.environ.get(nodeLabel+'_'+os.environ.get('EC2REGION').upper())
         if nodeLabel == 'BUILD':
@@ -54,9 +56,12 @@ class nodeMetadata:
 
     def saveData(self):
         ''' This function will save data to config file'''
+
         config = configparser.ConfigParser()
-        config[self.instanceId] = {}
-        config[self.instanceId]['instanceUrl'] = self.instanceUrl
-        config[self.instanceId]['DNSIp'] = self.DNSIp
-        with open(self.instanceId+'.ini', 'w') as configfile:
+        config[self.deploy[self.index]] = {}
+        config[self.deploy[self.index]]['instanceId'] = self.instanceId
+        config[self.deploy[self.index]]['instanceUrl'] = self.instanceUrl
+        config[self.deploy[self.index]]['DNSIp'] = self.DNSIp
+        with open('deploy_vm.ini', 'w') as configfile:
             config.write(configfile)
+        self.index = self.index + 1
