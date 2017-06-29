@@ -60,8 +60,7 @@ class nodeMetadata:
         config = configparser.ConfigParser()
         if os.path.isfile('deploy_vm.ini'):
             config.read('deploy_vm.ini')
-        else:
-            config[self.deploy[self.index]] = {}
+        config[self.deploy[self.index]] = {}
         config[self.deploy[self.index]]['instanceId'] = self.instanceId
         config[self.deploy[self.index]]['instanceUrl'] = self.instanceUrl
         config[self.deploy[self.index]]['DNSIp'] = self.DNSIp
