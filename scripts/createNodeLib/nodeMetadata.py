@@ -58,7 +58,10 @@ class nodeMetadata:
         ''' This function will save data to config file'''
 
         config = configparser.ConfigParser()
-        config[self.deploy[self.index]] = {}
+        if os.path.isfile(fname):
+            config.read('deploy_vm.ini')
+        else:
+            config[self.deploy[self.index]] = {}
         config[self.deploy[self.index]]['instanceId'] = self.instanceId
         config[self.deploy[self.index]]['instanceUrl'] = self.instanceUrl
         config[self.deploy[self.index]]['DNSIp'] = self.DNSIp
