@@ -16,7 +16,7 @@ def parallelBuilds() {
     print new Date();
     println "  Starting Preparation of build Nodes..."
     count = '0';
-    stage('Stage 1: Node Prepare for Build') {
+    stage('Stage 1: Node Prepare for Build and deploy node') {
         if (gitBranch != 'integration'){
             println "  Starting single node preparation for building "+gitBranch
             count = '1';
@@ -31,6 +31,12 @@ def parallelBuilds() {
             parameters: [string(name: 'EC2REGION', value: 'ohio'),
                 string(name: 'COUNT', value: '1'),
                 [$class: 'GeneratorKeyValueParameterValue', name: 'NODELABEL', value: 'BUILD']]
+        if (gitBranch == 'integration'){
+            build job: 'EC2_instance_n_node_creater',
+                parameters: [string(name: 'EC2REGION', value: 'ohio'),
+                    string(name: 'COUNT', value: '3'),
+                    [$class: 'GeneratorKeyValueParameterValue', name: 'NODELABEL', value: 'DEPLOY']]
+        }
     }
     build_job = []
     branchName = gitBranch.split('/')[1]
@@ -56,7 +62,11 @@ def parallelBuilds() {
         }
         parallel branches
     }
-    stage('Stage3: destroy generated node') {
+    stage('Stage3: destroy generated build node') {
         build job: 'EC2_instance_n_node_terminator', parameters: [string(name: 'EC2REGION', value: 'ohio'), [$class: 'GeneratorKeyValueParameterValue', name: 'NODELABEL', value: 'BUILD']]
     }
-}
+    if(gitBranch == 'integration'){
+        stage('stage4: Start Deploy VM'){
+            build 'Deploy_connector_job'
+        }
+    }
