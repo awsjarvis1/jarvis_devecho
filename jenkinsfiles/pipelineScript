@@ -70,3 +70,4 @@ def parallelBuilds() {
             build 'Deploy_connector_job'
         }
     }
+}
