@@ -20,7 +20,7 @@ def parallelBuilds() {
         if (gitBranch != 'integration'){
             println "  Starting single node preparation for building "+gitBranch
             count = '1';
-        } else if(  gitBranch.split('/')[1] == 'chatui') {
+        } else if(  gitBranch == 'dev/chatui') {
             count = '2';
         }
         else {
@@ -29,7 +29,7 @@ def parallelBuilds() {
         }
         build job: 'EC2_instance_n_node_creater',
             parameters: [string(name: 'EC2REGION', value: 'ohio'),
-                string(name: 'COUNT', value: '1'),
+                string(name: 'COUNT', value: count),
                 [$class: 'GeneratorKeyValueParameterValue', name: 'NODELABEL', value: 'BUILD']]
         if (gitBranch == 'integration'){
             build job: 'EC2_instance_n_node_creater',
