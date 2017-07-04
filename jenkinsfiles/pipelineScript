@@ -39,14 +39,16 @@ def parallelBuilds() {
         }
     }
     build_job = []
-    branchName = gitBranch.split('/')[1]
-    if(branchName == 'chatui'){
-        build_job.push('Build_Maven_Job_webapi')
-        build_job.push('Build_Maven_Job_webapp')
-    } else if(branchName == 'image_processing') {
-        build_job.push('Build_Maven_Job_image')
-    } else if(branchName == 'loganalytics') {
-        build_job.push('Build_Maven_Job_log')
+    if(gitBranch != 'integration'){
+        branchName = gitBranch
+        if(branchName == 'dev/chatui'){
+            build_job.push('Build_Maven_Job_webapi')
+            build_job.push('Build_Maven_Job_webapp')
+        } else if(branchName == 'dev/image_processing') {
+            build_job.push('Build_Maven_Job_image')
+        } else if(branchName == 'dev/loganalytics') {
+            build_job.push('Build_Maven_Job_log')
+        }
     } else {
         build_job.push('Build_Maven_Job_webapi')
         build_job.push('Build_Maven_Job_webapp')
