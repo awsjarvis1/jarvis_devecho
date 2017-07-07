@@ -71,5 +71,8 @@ def parallelBuilds() {
         stage('stage4: Start Deploy VM'){
             build 'Deploy_connector_job'
         }
+        stage('Stage5: destroy generated deploy node') {
+            build job: 'EC2_instance_n_node_terminator', parameters: [string(name: 'EC2REGION', value: 'ohio'), [$class: 'GeneratorKeyValueParameterValue', name: 'NODELABEL', value: 'DEPLOY']]
+        }
     }
 }
