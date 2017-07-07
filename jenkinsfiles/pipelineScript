@@ -77,6 +77,6 @@ def parallelBuilds() {
 
 def transformIntoStep(jobFullName, gitBranch) {
     return {
-       build job: job_name, parameters: [string(name: 'GIT_BRANCH', value: gitBranch)]
+       build job: jobFullName, parameters: [string(name: 'GIT_BRANCH', value: gitBranch)]
     }
 }
