@@ -48,6 +48,7 @@ def parallelBuilds() {
             build_job.push('Build_Maven_Job_image')
         } else if(branchName == 'dev/loganalytics') {
             build_job.push('Build_Maven_Job_log')
+            build_job.push('Build_Maven_Job_log_weka')
         }
     } else {
         build_job.push('Build_Maven_Job_webapi')
