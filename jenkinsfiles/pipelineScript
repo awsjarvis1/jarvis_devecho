@@ -25,7 +25,7 @@ def parallelBuilds() {
         }
         else {
             println "  Starting 3 node preparaton for building "+gitBranch
-            count = '4';
+            count = '5';
         }
         build job: 'EC2_instance_n_node_creater',
             parameters: [string(name: 'EC2REGION', value: 'ohio'),
@@ -55,6 +55,7 @@ def parallelBuilds() {
         build_job.push('Build_Maven_Job_webapp')
         build_job.push('Build_Maven_Job_image')
         build_job.push('Build_Maven_Job_log')
+        build_job.push('Build_Maven_Job_log_weka')
     }
     stage('Stage2: Build code changes') {
         def branches = [:]
