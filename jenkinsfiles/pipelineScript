@@ -58,9 +58,7 @@ def parallelBuilds() {
     stage('Stage2: Build code changes') {
         def branches = [:]
         for (job_name in build_job) {
-            branches[job_name] = {
-                build job: job_name, parameters: [string(name: 'GIT_BRANCH', value: gitBranch)]
-            }
+            branches[job_name] = transformIntoStep(job_name, gitBranch)
         }
         parallel branches
     }
@@ -74,5 +72,11 @@ def parallelBuilds() {
         stage('Stage5: destroy generated deploy node') {
             build job: 'EC2_instance_n_node_terminator', parameters: [string(name: 'EC2REGION', value: 'ohio'), [$class: 'GeneratorKeyValueParameterValue', name: 'NODELABEL', value: 'DEPLOY']]
         }
+    }
+}
+
+def transformIntoStep(jobFullName, gitBranch) {
+    return {
+       build job: job_name, parameters: [string(name: 'GIT_BRANCH', value: gitBranch)]
     }
 }
